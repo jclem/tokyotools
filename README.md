@@ -1,15 +1,14 @@
-# tokyotools
+# Tokyo Tools
 
-To install dependencies:
+A web-based preview tool for Tokyo Night themes. Switch between Tokyo Night,
+Tokyo Night Storm, and Tokyo Night Light themes and see how they look in IDE and
+terminal environments.
+
+## Run it
 
 ```bash
 bun install
+bun run dev
 ```
 
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.15. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+Open http://localhost:5173 to view the preview.
