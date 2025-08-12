@@ -1,0 +1,81 @@
+#!/usr/bin/env bun
+
+import { FileSystem } from "@effect/platform";
+import { BunContext } from "@effect/platform-bun";
+import { Array, Console, Data, Effect, Schema } from "effect";
+
+const Entry = Schema.Struct({
+	name: Schema.String,
+	path: Schema.String,
+	url: Schema.String,
+	download_url: Schema.String,
+	type: Schema.Literal("file"),
+});
+
+const repoName = "tokyo-night/tokyo-night-vscode-theme";
+const repoBaseURL = `https://api.github.com/repos/${repoName}`;
+const repoRawURL = `https://raw.githubusercontent.com/${repoName}/refs/heads/master`;
+
+class FetchError extends Data.TaggedError("FetchError")<{
+	readonly url: string;
+	readonly response: Response;
+}> {
+	get message() {
+		return `Failed to fetch ${this.url}: ${this.response.status} ${this.response.statusText}`;
+	}
+}
+
+const fetchEffect = (url: string) =>
+	Effect.tryPromise(() => fetch(url)).pipe(
+		Effect.flatMap((resp) =>
+			resp.ok
+				? Effect.succeed(resp)
+				: Effect.fail(new FetchError({ url, response: resp })),
+		),
+	);
+
+const getJSON = (url: string) =>
+	fetchEffect(url).pipe(
+		Effect.flatMap((resp) =>
+			Effect.tryPromise(() => resp.json() as Promise<unknown>),
+		),
+	);
+
+await Effect.runPromise(
+	Effect.gen(function* () {
+		const fs = yield* FileSystem.FileSystem;
+
+		yield* Console.log("Fetching themes...");
+
+		const themes = yield* getJSON(`${repoBaseURL}/contents/themes`).pipe(
+			Effect.flatMap(Schema.decodeUnknown(Schema.Array(Entry))),
+			Effect.map(
+				Array.map((entry) => ({
+					name: entry.name.replace("-color-theme.json", ""),
+					url: entry.download_url,
+				})),
+			),
+		);
+
+		yield* Effect.all(
+			Array.map(themes, (theme) =>
+				Effect.gen(function* () {
+					const resp = yield* fetchEffect(theme.url);
+					const text = yield* Effect.tryPromise(() => resp.text());
+					yield* fs.writeFileString(`original/${theme.name}.jsonc`, text);
+				}),
+			),
+		);
+
+		yield* Console.log("Fetching license...");
+
+		const license = yield* fetchEffect(`${repoRawURL}/LICENSE.txt`).pipe(
+			Effect.flatMap((resp) => Effect.tryPromise(() => resp.text())),
+		);
+
+		yield* fs.writeFileString(`original/LICENSE`, license);
+	}).pipe(
+		Effect.withConcurrency("unbounded"),
+		Effect.provide(BunContext.layer),
+	),
+);
