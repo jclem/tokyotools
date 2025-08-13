@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { ColorsPage } from "./components/colors-page";
 import { IDEPreview } from "./components/ide-preview";
+import { PageSwitcher } from "./components/page-switcher";
 import { PreviewSwitcher } from "./components/preview-switcher";
 import { TerminalPreview } from "./components/terminal-preview";
 import { ThemeSelector } from "./components/theme-selector";
@@ -11,6 +13,9 @@ export function App() {
 	const [selectedPreview, setSelectedPreview] = useState<"ide" | "terminal">(
 		"ide",
 	);
+	const [selectedPage, setSelectedPage] = useState<"preview" | "colors">(
+		"preview",
+	);
 	const theme = themes[selectedTheme];
 
 	return (
@@ -21,20 +26,30 @@ export function App() {
 						selectedTheme={selectedTheme}
 						onThemeChange={setSelectedTheme}
 					/>
-					<PreviewSwitcher
-						selectedPreview={selectedPreview}
-						onPreviewChange={setSelectedPreview}
+					<PageSwitcher
+						selectedPage={selectedPage}
+						onPageChange={setSelectedPage}
 					/>
+					{selectedPage === "preview" && (
+						<PreviewSwitcher
+							selectedPreview={selectedPreview}
+							onPreviewChange={setSelectedPreview}
+						/>
+					)}
 				</div>
 
 				<h1 className="py-2 font-bold">Tokyo Tools</h1>
 			</header>
 
 			<main className="flex justify-center">
-				{selectedPreview === "ide" ? (
-					<IDEPreview theme={theme} />
+				{selectedPage === "preview" ? (
+					selectedPreview === "ide" ? (
+						<IDEPreview theme={theme} />
+					) : (
+						<TerminalPreview theme={theme} />
+					)
 				) : (
-					<TerminalPreview theme={theme} />
+					<ColorsPage theme={theme} />
 				)}
 			</main>
 		</div>
