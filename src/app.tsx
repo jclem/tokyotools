@@ -15,9 +15,9 @@ export function App() {
 	const theme = themes[selectedTheme];
 
 	return (
-		<div className="mx-auto flex w-full max-w-7xl flex-col gap-16 p-8">
-			<header className="flex items-start justify-between">
-				<div className="flex flex-col gap-2">
+		<div className="mx-auto flex w-full max-w-7xl flex-col gap-12 p-4 sm:gap-16 sm:p-8">
+			<header className="flex flex-wrap items-start justify-between gap-4">
+				<div className="flex w-full flex-col gap-2 sm:w-auto">
 					<ThemeSelector
 						selectedTheme={selectedTheme}
 						onThemeChange={setSelectedTheme}
@@ -28,7 +28,7 @@ export function App() {
 					/>
 				</div>
 
-				<h1 className="py-2 font-bold">Tokyo Tools</h1>
+				<h1 className="py-2 text-xl font-bold sm:text-2xl">Tokyo Tools</h1>
 			</header>
 
 			<main className="flex justify-center">
