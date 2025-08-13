@@ -2,8 +2,8 @@ import { Tab } from "./tab";
 import { Tabs } from "./tabs";
 
 interface PreviewSwitcherProps {
-	selectedPreview: "ide" | "terminal";
-	onPreviewChange: (preview: "ide" | "terminal") => void;
+	selectedPreview: "ide" | "terminal" | "colors";
+	onPreviewChange: (preview: "ide" | "terminal" | "colors") => void;
 }
 
 export function PreviewSwitcher({
@@ -21,6 +21,11 @@ export function PreviewSwitcher({
 				label="Terminal"
 				isSelected={selectedPreview === "terminal"}
 				onClick={() => onPreviewChange("terminal")}
+			/>
+			<Tab
+				label="Colors"
+				isSelected={selectedPreview === "colors"}
+				onClick={() => onPreviewChange("colors")}
 			/>
 		</Tabs>
 	);

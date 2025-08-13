@@ -4,13 +4,14 @@ import { PreviewSwitcher } from "./components/preview-switcher";
 import { TerminalPreview } from "./components/terminal-preview";
 import { ThemeSelector } from "./components/theme-selector";
 import { themes } from "./themes/themes";
+import { ColorsPreview } from "./components/colors-preview";
 
 export function App() {
 	const [selectedTheme, setSelectedTheme] =
 		useState<keyof typeof themes>("Tokyo Night");
-	const [selectedPreview, setSelectedPreview] = useState<"ide" | "terminal">(
-		"ide",
-	);
+	const [selectedPreview, setSelectedPreview] = useState<
+		"ide" | "terminal" | "colors"
+	>("ide");
 	const theme = themes[selectedTheme];
 
 	return (
@@ -33,8 +34,10 @@ export function App() {
 			<main className="flex justify-center">
 				{selectedPreview === "ide" ? (
 					<IDEPreview theme={theme} />
-				) : (
+				) : selectedPreview === "terminal" ? (
 					<TerminalPreview theme={theme} />
+				) : (
+					<ColorsPreview theme={theme} />
 				)}
 			</main>
 		</div>
