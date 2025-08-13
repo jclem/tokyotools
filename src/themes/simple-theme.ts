@@ -9,8 +9,8 @@ export interface SimpleThemeColors {
 	primary: Hex;
 	secondary: Hex;
 	canvas: {
-		background: Hex;
-		foreground: Hex;
+		primary: { background: Hex; foreground: Hex };
+		secondary: { background: Hex; foreground: Hex };
 	};
 }
 
@@ -26,8 +26,14 @@ export function mapToSimpleTheme(theme: GenericTheme): SimpleTheme {
 			primary: theme.brand.primary,
 			secondary: theme.text.secondary,
 			canvas: {
-				background: theme.surfaces.canvas,
-				foreground: theme.text.primary,
+				primary: {
+					background: theme.surfaces.canvas,
+					foreground: theme.text.primary,
+				},
+				secondary: {
+					background: theme.surfaces.sunken,
+					foreground: theme.text.secondary,
+				},
 			},
 		},
 	};

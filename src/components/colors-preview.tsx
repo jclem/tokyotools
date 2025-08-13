@@ -12,8 +12,10 @@ export function ColorsPreview({ theme }: ColorsPreviewProps) {
 	const swatches: Array<{ label: string; value: string }> = [
 		{ label: "Primary", value: primary },
 		{ label: "Secondary", value: secondary },
-		{ label: "Canvas Background", value: canvas.background },
-		{ label: "Canvas Foreground", value: canvas.foreground },
+		{ label: "Canvas Primary Background", value: canvas.primary.background },
+		{ label: "Canvas Primary Foreground", value: canvas.primary.foreground },
+		{ label: "Canvas Secondary Background", value: canvas.secondary.background },
+		{ label: "Canvas Secondary Foreground", value: canvas.secondary.foreground },
 	];
 
 	return (
